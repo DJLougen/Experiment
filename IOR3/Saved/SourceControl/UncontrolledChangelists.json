@@ -1,0 +1,14 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"C:/Users/basbe/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Maps/VRTemplateMap_BuiltData.uasset",
+				"C:/Users/basbe/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Maps/VRTemplateMap.umap",
+				"C:/Users/basbe/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Blueprints/participant.uasset"
+			]
+		}
+	]
+}

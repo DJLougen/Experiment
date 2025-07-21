@@ -1,0 +1,4 @@
+*.psd filter=lfs diff=lfs merge=lfs -text
+IOR3/Binaries/Win64/IOR3.exe filter=lfs diff=lfs merge=lfs -text
+IOR3/Binaries/Win64/IOR3.pbd filter=lfs diff=lfs merge=lfs -text
+IOR3/Binaries/Win64/IOR3.pdb filter=lfs diff=lfs merge=lfs -text

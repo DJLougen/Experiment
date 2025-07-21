@@ -7,6 +7,7 @@
             height: 20px;
             border-radius: 50%;
             display: inline-block;
+            margin-right: 10px;
         }
         .connected {
             background-color: green;
@@ -15,9 +16,18 @@
             background-color: red;
         }
     </style>
+    <meta http-equiv="refresh" content="5"> <!-- Optional: auto-refresh every 5 sec -->
 </head>
 <body>
     <h1>Device Connection Status:</h1>
     <div class="status-circle {{ 'connected' if connected else 'disconnected' }}"></div>
+    {{ "Connected" if connected else "Disconnected" }}
+
+    <h2>Data File</h2>
+    {% if file_ready %}
+        <p>✅ Data received. <a href="/download">Click here to download CSV</a></p>
+    {% else %}
+        <p>📄 No data file received yet.</p>
+    {% endif %}
 </body>
 </html>

@@ -1,0 +1,11 @@
+Trial,CueSide,TargetSide,Gap(ms),CueValidity,ReactionTime(ms),ResponseSide
+1,R,R,750,valid,498,R
+2,R,L,300,invalid,365,L
+3,L,R,300,invalid,362,R
+4,R,L,100,invalid,314,L
+5,L,L,100,valid,321,L
+6,R,L,300,invalid,308,L
+7,R,R,100,valid,490,R
+8,R,R,750,valid,325,R
+9,R,R,750,valid,298,R
+10,R,R,300,valid,443,R

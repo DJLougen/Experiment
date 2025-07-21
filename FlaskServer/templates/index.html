@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        .status-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .connected {
+            background-color: green;
+        }
+        .disconnected {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Device Connection Status:</h1>
+    <div class="status-circle {{ 'connected' if connected else 'disconnected' }}"></div>
+</body>
+</html>

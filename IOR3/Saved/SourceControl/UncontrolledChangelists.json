@@ -5,6 +5,10 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"/Users/djl/Documents/GitHub/Experiment/IOR3/Content/ExperimentLogic/on.uasset",
+				"/Users/djl/Documents/GitHub/Experiment/IOR3/Content/ExperimentLogic/OnOff.uasset",
+				"/Users/djl/Documents/GitHub/Experiment/IOR3/Content/ExperimentLogic/timer.uasset",
+				"/Users/djl/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Maps/VRTemplateMap.umap",
 				"C:/Users/basbe/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Maps/VRTemplateMap_BuiltData.uasset",
 				"C:/Users/basbe/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Maps/VRTemplateMap.umap",
 				"C:/Users/basbe/Documents/GitHub/Experiment/IOR3/Content/VRTemplate/Blueprints/participant.uasset"

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.2.4),
-    on Wed Jul 23 10:11:59 2025
+    on Wed Jul 23 11:04:24 2025
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -33,6 +33,8 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
+# Run 'Before Experiment' code from practice_code
+prefs.hardware['skipFrameCheck'] = True
 # --- Setup global variables (available in all functions) ---
 # create a device manager to handle hardware (keyboards, mice, mirophones, speakers, etc.)
 deviceManager = hardware.DeviceManager()
@@ -40,7 +42,7 @@ deviceManager = hardware.DeviceManager()
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 # store info about the experiment session
 psychopyVersion = '2024.2.4'
-expName = 'IOR _HSF5'  # from the Builder filename that created this script
+expName = 'IOR3'  # from the Builder filename that created this script
 # information about this experiment
 expInfo = {
     'participant': f"{randint(0, 999999):06.0f}",
@@ -60,7 +62,7 @@ or run the experiment with `--pilot` as an argument. To change what pilot
 PILOTING = core.setPilotModeFromArgs()
 # start off with values from experiment settings
 _fullScr = True
-_winSize = [1920, 1080]
+_winSize = [1728, 1117]
 # if in pilot mode, apply overrides according to preferences
 if PILOTING:
     # force windowed mode
@@ -193,9 +195,9 @@ def setupWindow(expInfo=None, win=None):
     if win is None:
         # if not given a window to setup, make one
         win = visual.Window(
-            size=_winSize, fullscr=_fullScr, screen=1,
+            size=_winSize, fullscr=_fullScr, screen=0,
             winType='pyglet', allowGUI=False, allowStencil=False,
-            monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
+            monitor='testMonitor', color=[-1,-1,-1], colorSpace='rgb',
             backgroundImage='', backgroundFit='none',
             blendMode='avg', useFBO=True,
             units='height',
@@ -203,16 +205,11 @@ def setupWindow(expInfo=None, win=None):
         )
     else:
         # if we have a window, just set the attributes which are safe to set
-        win.color = [0,0,0]
+        win.color = [-1,-1,-1]
         win.colorSpace = 'rgb'
         win.backgroundImage = ''
         win.backgroundFit = 'none'
         win.units = 'height'
-    if expInfo is not None:
-        # get/measure frame rate if not already in expInfo
-        if win._monitorFrameRate is None:
-            win._monitorFrameRate = win.getActualFrameRate(infoMsg='Attempting to measure frame rate of screen, please wait...')
-        expInfo['frameRate'] = win._monitorFrameRate
     win.hideMessage()
     # show a visual indicator if we're in piloting mode
     if PILOTING and prefs.piloting['showPilotingIndicator']:
@@ -435,24 +432,24 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     practice_fixation = visual.TextStim(win=win, name='practice_fixation',
         text='+',
         font='Arial',
-        pos=(0, 0), draggable=False, height=0.05, wrapWidth=None, ori=0.0, 
+        pos=(0, 0), draggable=False, height=0.25, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
         depth=-1.0);
     practice_leftBox = visual.Rect(
         win=win, name='practice_leftBox',units='cm', 
-        width=(2.128, 2.128)[0], height=(2.128, 2.128)[1],
-        ori=0.0, pos=(-5.334, 0), draggable=False, anchor='center',
+        width=(21.28, 21.28)[0], height=(21.28, 21.28)[1],
+        ori=0.0, pos=(-53.34, 0), draggable=False, anchor='center',
         lineWidth=3.0,
-        colorSpace='rgb', lineColor='white', fillColor=[-1.0000, -1.0000, -1.0000],
-        opacity=0.5, depth=-2.0, interpolate=True)
+        colorSpace='rgb', lineColor='white', fillColor='grey',
+        opacity=1.0, depth=-2.0, interpolate=True)
     practice_RightBox = visual.Rect(
         win=win, name='practice_RightBox',units='cm', 
-        width=(2.128, 2.128)[0], height=(2.128, 2.128)[1],
-        ori=0.0, pos=(5.334, 0), draggable=False, anchor='center',
+        width=(21.28, 21.28)[0], height=(21.28, 21.28)[1],
+        ori=0.0, pos=(53.34, 0), draggable=False, anchor='center',
         lineWidth=3.0,
-        colorSpace='rgb', lineColor='white', fillColor=[-1.0000, -1.0000, -1.0000],
-        opacity=0.5, depth=-3.0, interpolate=True)
+        colorSpace='rgb', lineColor='white', fillColor='grey',
+        opacity=1.0, depth=-3.0, interpolate=True)
     practice_key_resp = keyboard.Keyboard(deviceName='practice_key_resp')
     practice_Cue = visual.Rect(
         win=win, name='practice_Cue',units='deg', 
@@ -1226,7 +1223,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             # if practice_leftBox is active this frame...
             if practice_leftBox.status == STARTED:
                 # update params
-                practice_leftBox.setLineColor([-1.0000, -1.0000, -1.0000], log=False)
+                practice_leftBox.setLineColor('grey', log=False)
             
             # if practice_leftBox is stopping this frame...
             if practice_leftBox.status == STARTED:
@@ -1260,7 +1257,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             # if practice_RightBox is active this frame...
             if practice_RightBox.status == STARTED:
                 # update params
-                practice_RightBox.setLineColor([-1.0000, -1.0000, -1.0000], log=False)
+                practice_RightBox.setLineColor('grey', log=False)
             
             # if practice_RightBox is stopping this frame...
             if practice_RightBox.status == STARTED:

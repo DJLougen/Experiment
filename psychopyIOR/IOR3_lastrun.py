@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.2.4),
-    on Wed Jul 23 11:04:24 2025
+    on Wed Jul 23 13:47:20 2025
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -432,21 +432,21 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     practice_fixation = visual.TextStim(win=win, name='practice_fixation',
         text='+',
         font='Arial',
-        pos=(0, 0), draggable=False, height=0.25, wrapWidth=None, ori=0.0, 
+        pos=(0, 0), draggable=False, height=0.0986, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
         depth=-1.0);
     practice_leftBox = visual.Rect(
         win=win, name='practice_leftBox',units='cm', 
-        width=(21.28, 21.28)[0], height=(21.28, 21.28)[1],
-        ori=0.0, pos=(-53.34, 0), draggable=False, anchor='center',
+        width=(2.128, 2.128)[0], height=(2.128, 2.128)[1],
+        ori=0.0, pos=(-5.334, 0), draggable=False, anchor='center',
         lineWidth=3.0,
-        colorSpace='rgb', lineColor='white', fillColor='grey',
+        colorSpace='rgb', lineColor='white', fillColor=[0.7500, 0.7500, 0.7500],
         opacity=1.0, depth=-2.0, interpolate=True)
     practice_RightBox = visual.Rect(
         win=win, name='practice_RightBox',units='cm', 
-        width=(21.28, 21.28)[0], height=(21.28, 21.28)[1],
-        ori=0.0, pos=(53.34, 0), draggable=False, anchor='center',
+        width=(2.128, 2.128)[0], height=(2.128, 2.128)[1],
+        ori=0.0, pos=(5.334, 0), draggable=False, anchor='center',
         lineWidth=3.0,
         colorSpace='rgb', lineColor='white', fillColor='grey',
         opacity=1.0, depth=-3.0, interpolate=True)

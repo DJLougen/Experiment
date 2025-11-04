@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.2.4),
-    on Mon Oct  6 10:21:46 2025
+    on Mon Oct  6 10:16:59 2025
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -128,7 +128,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='/Users/djl/Documents/GitHub/Experiment/psychopyIOR/IOR3_lastrun.py',
+        originPath='/Users/djl/Documents/GitHub/Experiment/psychopyIOR/IOR3.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -441,7 +441,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         width=(2.128, 2.128)[0], height=(2.128, 2.128)[1],
         ori=0.0, pos=(-5.334, 0), draggable=False, anchor='center',
         lineWidth=3.0,
-        colorSpace='rgb', lineColor='white', fillColor='grey',
+        colorSpace='rgb', lineColor='white', fillColor=[0.7500, 0.7500, 0.7500],
         opacity=1.0, depth=-2.0, interpolate=True)
     practice_RightBox = visual.Rect(
         win=win, name='practice_RightBox',units='cm', 
@@ -452,7 +452,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         opacity=1.0, depth=-3.0, interpolate=True)
     practice_key_resp = keyboard.Keyboard(deviceName='practice_key_resp')
     practice_Cue = visual.Rect(
-        win=win, name='practice_Cue',units='cm', 
+        win=win, name='practice_Cue',units='deg', 
         width=[2.128,2.128][0], height=[2.128,2.128][1],
         ori=0.0, pos=[0,0], draggable=False, anchor='center',
         lineWidth=3.0,

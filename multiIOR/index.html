@@ -110,8 +110,7 @@
     // =============================================================================
     // STANDARD IOR EXPERIMENT - Detection Task, Two Fixed SOAs, 6 Locations
     // =============================================================================
-    // SOA 150ms -> typically elicits facilitation (faster cued RTs)
-    // SOA 600ms -> typically elicits IOR (slower cued RTs)
+    // SOA 300ms -> typically in the IOR range (slower cued RTs)
     // Detection task: press SPACEBAR as soon as you see the target
     // 6 equidistant locations (3 left, 3 right of fixation)
     // =============================================================================
@@ -125,9 +124,9 @@
     const POS_LABELS = ['far-left', 'mid-left', 'near-left', 'near-right', 'mid-right', 'far-right'];
 
     // --- Experimental Parameters ---
-    const SOAS = [150, 600];               // Two SOA conditions (ms)
-    const N_REPS_PER_CELL = 10;            // Repetitions per unique condition
-    // 2 SOAs x 2 validities x 6 cue positions x 10 reps = 240 trials
+    const SOA = 300;                        // Single SOA condition (ms)
+    const N_REPS_PER_CELL = 15;            // Repetitions per cue x target cell
+    // 6 cue positions x 6 target positions x 15 reps = 540 trials
     const N_PRACTICE_TRIALS = 12;
 
     // --- Timing Parameters (ms) ---
@@ -139,30 +138,20 @@
     let currentTrial = {};
     let practiceTrialCount = 0;
 
-    // --- Generate Trial List ---
+    // --- Generate Trial List (full 6x6 cue x target factorial) ---
     function generateTrialList() {
         const trials = [];
-        for (const soa of SOAS) {
-            for (const validity of ['valid', 'invalid']) {
-                for (let cuePos = 0; cuePos < 6; cuePos++) {
-                    for (let r = 0; r < N_REPS_PER_CELL; r++) {
-                        let targetPos;
-                        if (validity === 'valid') {
-                            targetPos = cuePos;
-                        } else {
-                            do {
-                                targetPos = Math.floor(Math.random() * 6);
-                            } while (targetPos === cuePos);
-                        }
-                        trials.push({
-                            soa: soa,
-                            validity: validity,
-                            cuePos: cuePos,
-                            targetPos: targetPos,
-                            cueSide: cuePos < 3 ? 'left' : 'right',
-                            targetSide: targetPos < 3 ? 'left' : 'right'
-                        });
-                    }
+        for (let cuePos = 0; cuePos < 6; cuePos++) {
+            for (let targetPos = 0; targetPos < 6; targetPos++) {
+                for (let r = 0; r < N_REPS_PER_CELL; r++) {
+                    trials.push({
+                        soa: SOA,
+                        validity: cuePos === targetPos ? 'valid' : 'invalid',
+                        cuePos: cuePos,
+                        targetPos: targetPos,
+                        cueSide: cuePos < 3 ? 'left' : 'right',
+                        targetSide: targetPos < 3 ? 'left' : 'right'
+                    });
                 }
             }
         }
@@ -178,7 +167,7 @@
     function generatePracticeTrials() {
         const trials = [];
         for (let i = 0; i < N_PRACTICE_TRIALS; i++) {
-            const soa = SOAS[Math.floor(Math.random() * SOAS.length)];
+            const soa = SOA;
             const cuePos = Math.floor(Math.random() * 6);
             const validity = Math.random() < 0.5 ? 'valid' : 'invalid';
             let targetPos;
@@ -387,7 +376,7 @@
             <h2>MAIN EXPERIMENT</h2>
             <p>Practice complete! The main experiment will now begin.</p>
             <p>There will be <strong>${mainTrials.length} trials</strong> total.</p>
-            <p>You will get short breaks every 48 trials.</p>
+            <p>You will get short breaks every 54 trials.</p>
             <p class="continue-text">Press SPACE to start</p>
         </div>
     `,
@@ -395,7 +384,7 @@
     });
 
     // --- Main Trial Procedure ---
-    const BREAK_INTERVAL = 48;
+    const BREAK_INTERVAL = 54;
     let mainTrialIndex = 0;
 
     const mainTrialProcedure = {
@@ -504,45 +493,59 @@
                 return (rts.reduce((a, b) => a + b, 0) / rts.length).toFixed(0);
             }
 
-            const v150 = meanRT(150, 'valid');
-            const i150 = meanRT(150, 'invalid');
-            const v600 = meanRT(600, 'valid');
-            const i600 = meanRT(600, 'invalid');
+            // Compute IOR by cue position (cued vs mean uncued)
+            function iorAtPos(cuePos) {
+                const cued = validTrials.filterCustom(function (t) {
+                    return t.cuePos === cuePos && t.validity === 'valid';
+                });
+                const uncued = validTrials.filterCustom(function (t) {
+                    return t.cuePos === cuePos && t.validity === 'invalid';
+                });
+                const cuedRTs = cued.select('rt').values;
+                const uncuedRTs = uncued.select('rt').values;
+                if (cuedRTs.length === 0 || uncuedRTs.length === 0) return { cued: 'N/A', uncued: 'N/A', ior: 'N/A' };
+                const meanCued = cuedRTs.reduce((a, b) => a + b, 0) / cuedRTs.length;
+                const meanUncued = uncuedRTs.reduce((a, b) => a + b, 0) / uncuedRTs.length;
+                return {
+                    cued: meanCued.toFixed(0),
+                    uncued: meanUncued.toFixed(0),
+                    ior: (meanCued - meanUncued).toFixed(0)
+                };
+            }
 
-            const effect150 = (v150 !== 'N/A' && i150 !== 'N/A')
-                ? (parseInt(v150) - parseInt(i150)) + ' ms'
-                : 'N/A';
-            const effect600 = (v600 !== 'N/A' && i600 !== 'N/A')
-                ? (parseInt(v600) - parseInt(i600)) + ' ms'
-                : 'N/A';
+            // Build per-position rows
+            const eccentricityLabels = ['Far', 'Mid', 'Near', 'Near', 'Mid', 'Far'];
+            let posRows = '';
+            for (let p = 0; p < 6; p++) {
+                const r = iorAtPos(p);
+                const iorVal = parseInt(r.ior);
+                const color = isNaN(iorVal) ? 'white' : (iorVal > 0 ? '#66ff66' : '#ffaa66');
+                posRows += `
+                    <tr>
+                        <td style="padding: 6px 14px; font-weight: bold;">${POS_LABELS[p]}<br><span style="font-size:13px;color:#888;">(${eccentricityLabels[p]})</span></td>
+                        <td style="padding: 6px 14px;">${r.cued} ms</td>
+                        <td style="padding: 6px 14px;">${r.uncued} ms</td>
+                        <td style="padding: 6px 14px; color: ${color};">${r.ior} ms</td>
+                    </tr>`;
+            }
 
             return `
                 <div class="results">
                     <h2>EXPERIMENT COMPLETE</h2>
                     <p>Total trials: ${nTrials}</p>
                     <br>
-                    <table style="margin: 0 auto; color: white; font-size: 20px; border-collapse: collapse;">
+                    <p style="font-weight: bold; font-size: 20px;">IOR by Cue Position</p>
+                    <table style="margin: 0 auto; color: white; font-size: 18px; border-collapse: collapse;">
                         <tr>
-                            <th style="padding: 8px 20px; border-bottom: 2px solid white;"></th>
-                            <th style="padding: 8px 20px; border-bottom: 2px solid white;">Cued</th>
-                            <th style="padding: 8px 20px; border-bottom: 2px solid white;">Uncued</th>
-                            <th style="padding: 8px 20px; border-bottom: 2px solid white;">Effect</th>
+                            <th style="padding: 6px 14px; border-bottom: 2px solid white;">Cue Position</th>
+                            <th style="padding: 6px 14px; border-bottom: 2px solid white;">Cued RT</th>
+                            <th style="padding: 6px 14px; border-bottom: 2px solid white;">Uncued RT</th>
+                            <th style="padding: 6px 14px; border-bottom: 2px solid white;">IOR</th>
                         </tr>
-                        <tr>
-                            <td style="padding: 8px 20px; font-weight: bold;">SOA 150 ms</td>
-                            <td style="padding: 8px 20px;">${v150} ms</td>
-                            <td style="padding: 8px 20px;">${i150} ms</td>
-                            <td style="padding: 8px 20px; color: ${parseInt(effect150) < 0 ? '#66ff66' : '#ffaa66'};">${effect150}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 20px; font-weight: bold;">SOA 600 ms</td>
-                            <td style="padding: 8px 20px;">${v600} ms</td>
-                            <td style="padding: 8px 20px;">${i600} ms</td>
-                            <td style="padding: 8px 20px; color: ${parseInt(effect600) > 0 ? '#66ff66' : '#ffaa66'};">${effect600}</td>
-                        </tr>
+                        ${posRows}
                     </table>
                     <br>
-                    <p style="font-size: 16px; color: #aaa;">Effect = Cued RT &minus; Uncued RT<br>Negative = facilitation &nbsp;|&nbsp; Positive = IOR</p>
+                    <p style="font-size: 15px; color: #aaa;">IOR = Cued RT &minus; Mean Uncued RT &nbsp;|&nbsp; Positive = inhibition</p>
                     <br>
                     <p>Thank you for participating!</p>
                     <p style="color: #aaa; margin-top: 20px;">Press SPACE to finish and download data</p>

@@ -110,8 +110,7 @@
     // =============================================================================
     // STANDARD IOR EXPERIMENT - Detection Task, Two Fixed SOAs, 6 Locations
     // =============================================================================
-    // SOA 150ms -> typically elicits facilitation (faster cued RTs)
-    // SOA 600ms -> typically elicits IOR (slower cued RTs)
+    // SOA 300ms -> typically elicits facilitation (faster cued RTs)
     // Detection task: press SPACEBAR as soon as you see the target
     // 6 equidistant locations (3 left, 3 right of fixation)
     // =============================================================================
@@ -122,12 +121,14 @@
     const BOX_CENTERS = [100, 240, 380, 620, 760, 900];
     const BOX_SIZE = 80;
     const FILL_SIZE = 74;
-    const POS_LABELS = ['far-left', 'mid-left', 'near-left', 'near-right', 'mid-right', 'far-right'];
+    const POS_LABELS = ['1', '2', '3', '4', '5', '6'];
 
     // --- Experimental Parameters ---
-    const SOAS = [150, 600];               // Two SOA conditions (ms)
-    const N_REPS_PER_CELL = 10;            // Repetitions per unique condition
-    // 2 SOAs x 2 validities x 6 cue positions x 10 reps = 240 trials
+    const SOAS = [300];               // Single SOA condition (ms)
+    const N_REPS_PER_CELL = 2;            // Repetitions per unique condition
+    // 1 SOA x 2 validities x 6 cue positions x 25 reps = 300 trials
+    // + 60 catch trials (20% of 300) = 360 total
+    const N_CATCH_TRIALS = 2;
     const N_PRACTICE_TRIALS = 12;
 
     // --- Timing Parameters (ms) ---
@@ -157,6 +158,7 @@
                         trials.push({
                             soa: soa,
                             validity: validity,
+                            isCatch: false,
                             cuePos: cuePos,
                             targetPos: targetPos,
                             cueSide: cuePos < 3 ? 'left' : 'right',
@@ -165,6 +167,19 @@
                     }
                 }
             }
+        }
+        // Add catch trials (cue appears, no target)
+        for (let i = 0; i < N_CATCH_TRIALS; i++) {
+            const cuePos = Math.floor(Math.random() * 6);
+            trials.push({
+                soa: SOAS[0],
+                validity: 'catch',
+                isCatch: true,
+                cuePos: cuePos,
+                targetPos: null,
+                cueSide: cuePos < 3 ? 'left' : 'right',
+                targetSide: null
+            });
         }
         // Shuffle using Fisher-Yates
         for (let i = trials.length - 1; i > 0; i--) {
@@ -282,12 +297,13 @@
             <p>You will see six boxes on the screen. On each trial:</p>
             <ul>
                 <li>A white square will briefly flash in one box &mdash; this is the <strong>cue</strong>. <em>Ignore it.</em></li>
-                <li>After a short delay, a white square will appear in one of the boxes &mdash; this is the <strong>target</strong>.</li>
+                <li>After a short delay, a white square may appear in one of the boxes &mdash; this is the <strong>target</strong>.</li>
             </ul>
             <p><strong>Your task:</strong></p>
             <ul>
                 <li>Press the <strong>SPACEBAR</strong> as quickly as possible when you see the target</li>
                 <li>Do <strong>NOT</strong> respond to the cue &mdash; only to the target</li>
+                <li>On some trials, <strong>no target will appear</strong> &mdash; do not press anything on those trials</li>
             </ul>
             <p>Respond as <strong>QUICKLY</strong> as possible.</p>
             <p class="continue-text">Press SPACE to continue</p>
@@ -427,21 +443,30 @@
                     return Math.max(0, currentTrial.soa - CUE_DURATION);
                 }
             },
-            // Target (stays until response)
+            // Target (stays until response) or catch (fixed duration, no target)
             {
                 type: jsPsychHtmlKeyboardResponse,
-                stimulus: function () { return generateTrialHTML('target'); },
+                stimulus: function () {
+                    return currentTrial.isCatch
+                        ? generateTrialHTML('fixation')
+                        : generateTrialHTML('target');
+                },
                 choices: [' '],
+                trial_duration: function () {
+                    return currentTrial.isCatch ? 1000 : null;
+                },
                 data: {
                     task: 'ior-trial',
                     practice: false
                 },
                 on_finish: function (data) {
                     data.trialNum = mainTrialIndex;
+                    data.isCatch = currentTrial.isCatch;
+                    data.falseAlarm = currentTrial.isCatch && data.response !== null;
                     data.cuePos = currentTrial.cuePos;
                     data.targetPos = currentTrial.targetPos;
                     data.cuePosLabel = POS_LABELS[currentTrial.cuePos];
-                    data.targetPosLabel = POS_LABELS[currentTrial.targetPos];
+                    data.targetPosLabel = currentTrial.isCatch ? 'none' : POS_LABELS[currentTrial.targetPos];
                     data.cueSide = currentTrial.cueSide;
                     data.targetSide = currentTrial.targetSide;
                     data.validity = currentTrial.validity;
@@ -456,19 +481,21 @@
                 trial_duration: ITI_DURATION
             },
             {
-                type: jsPsychHtmlKeyboardResponse,
-                stimulus: function () {
-                    const remaining = mainTrials.length - mainTrialIndex;
-                    return `
-                        <div class="instructions" style="text-align: center;">
-                            <h2>BREAK</h2>
-                            <p>Take a short rest.</p>
-                            <p>${remaining} trials remaining.</p>
-                            <p class="continue-text">Press SPACE to continue</p>
-                        </div>
-                    `;
-                },
-                choices: [' '],
+                timeline: [{
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: function () {
+                        const remaining = mainTrials.length - mainTrialIndex;
+                        return `
+                            <div class="instructions" style="text-align: center;">
+                                <h2>BREAK</h2>
+                                <p>Take a short rest.</p>
+                                <p>${remaining} trials remaining.</p>
+                                <p class="continue-text">Press SPACE to continue</p>
+                            </div>
+                        `;
+                    },
+                    choices: [' ']
+                }],
                 conditional_function: function () {
                     return mainTrialIndex > 0 &&
                         mainTrialIndex < mainTrials.length &&
@@ -486,40 +513,35 @@
     timeline.push({
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function () {
-            const data = jsPsych.data.get().filter({ task: 'ior-trial', practice: false });
-            // Filter out anticipatory responses (RT < 100ms)
-            const validTrials = data.filterCustom(function (trial) {
-                return trial.rt > 100;
-            });
+            const allData = jsPsych.data.get().filter({ task: 'ior-trial', practice: false });
+            const expTrials = allData.filterCustom(t => !t.isCatch);
+            const catchTrials = allData.filterCustom(t => t.isCatch);
 
-            const nTrials = data.count();
+            // Filter out anticipatory responses (RT < 100ms) for experimental trials
+            const validTrials = expTrials.filterCustom(t => t.rt > 100);
+            const nTrials = expTrials.count();
 
-            // Compute mean RT by SOA x Validity
-            function meanRT(soa, validity) {
-                const subset = validTrials.filterCustom(function (trial) {
-                    return trial.soa === soa && trial.validity === validity;
-                });
+            function meanRT(validity) {
+                const subset = validTrials.filterCustom(t => t.validity === validity);
                 const rts = subset.select('rt').values;
                 if (rts.length === 0) return 'N/A';
                 return (rts.reduce((a, b) => a + b, 0) / rts.length).toFixed(0);
             }
 
-            const v150 = meanRT(150, 'valid');
-            const i150 = meanRT(150, 'invalid');
-            const v600 = meanRT(600, 'valid');
-            const i600 = meanRT(600, 'invalid');
+            const vRT = meanRT('valid');
+            const iRT = meanRT('invalid');
+            const effect = (vRT !== 'N/A' && iRT !== 'N/A')
+                ? (parseInt(vRT) - parseInt(iRT)) + ' ms'
+                : 'N/A';
 
-            const effect150 = (v150 !== 'N/A' && i150 !== 'N/A')
-                ? (parseInt(v150) - parseInt(i150)) + ' ms'
-                : 'N/A';
-            const effect600 = (v600 !== 'N/A' && i600 !== 'N/A')
-                ? (parseInt(v600) - parseInt(i600)) + ' ms'
-                : 'N/A';
+            const nCatch = catchTrials.count();
+            const nFalseAlarms = catchTrials.filterCustom(t => t.falseAlarm).count();
+            const faRate = nCatch > 0 ? ((nFalseAlarms / nCatch) * 100).toFixed(1) + '%' : 'N/A';
 
             return `
                 <div class="results">
                     <h2>EXPERIMENT COMPLETE</h2>
-                    <p>Total trials: ${nTrials}</p>
+                    <p>Total trials: ${nTrials} experimental + ${nCatch} catch</p>
                     <br>
                     <table style="margin: 0 auto; color: white; font-size: 20px; border-collapse: collapse;">
                         <tr>
@@ -529,20 +551,16 @@
                             <th style="padding: 8px 20px; border-bottom: 2px solid white;">Effect</th>
                         </tr>
                         <tr>
-                            <td style="padding: 8px 20px; font-weight: bold;">SOA 150 ms</td>
-                            <td style="padding: 8px 20px;">${v150} ms</td>
-                            <td style="padding: 8px 20px;">${i150} ms</td>
-                            <td style="padding: 8px 20px; color: ${parseInt(effect150) < 0 ? '#66ff66' : '#ffaa66'};">${effect150}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 20px; font-weight: bold;">SOA 600 ms</td>
-                            <td style="padding: 8px 20px;">${v600} ms</td>
-                            <td style="padding: 8px 20px;">${i600} ms</td>
-                            <td style="padding: 8px 20px; color: ${parseInt(effect600) > 0 ? '#66ff66' : '#ffaa66'};">${effect600}</td>
+                            <td style="padding: 8px 20px; font-weight: bold;">SOA 300 ms</td>
+                            <td style="padding: 8px 20px;">${vRT} ms</td>
+                            <td style="padding: 8px 20px;">${iRT} ms</td>
+                            <td style="padding: 8px 20px; color: ${parseInt(effect) > 0 ? '#66ff66' : '#ffaa66'};">${effect}</td>
                         </tr>
                     </table>
                     <br>
-                    <p style="font-size: 16px; color: #aaa;">Effect = Cued RT &minus; Uncued RT<br>Negative = facilitation &nbsp;|&nbsp; Positive = IOR</p>
+                    <p style="font-size: 18px;">False alarm rate (catch trials): ${faRate}</p>
+                    <br>
+                    <p style="font-size: 16px; color: #aaa;">Effect = Cued RT &minus; Uncued RT &nbsp;|&nbsp; Positive = IOR</p>
                     <br>
                     <p>Thank you for participating!</p>
                     <p style="color: #aaa; margin-top: 20px;">Press SPACE to finish and download data</p>

@@ -1,0 +1,207 @@
+%% ============================================================
+%%  Attention, Perception, & Psychophysics – Methods section
+%%  Compiles out-of-the-box on Overleaf (no extra .cls needed).
+%%  Uses APA 7th-edition author-year citations via natbib.
+%%
+%%  HOW TO USE IN OVERLEAF:
+%%  1. Upload this file and refs.bib to your Overleaf project.
+%%  2. Compile with pdfLaTeX.
+%%  3. When ready to submit, paste the Method section into the
+%%     official Springer Nature template (search "Springer Nature
+%%     LaTeX Template" in the Overleaf gallery).
+%% ============================================================
+
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{times}          % Times New Roman (Springer preference)
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage[hidelinks]{hyperref}
+
+%% APA author-year citations
+\usepackage[
+    natbib=true,
+    style=apa,
+    backend=biber
+]{biblatex}
+\addbibresource{refs.bib}
+
+\doublespacing
+
+%% ============================================================
+
+\begin{document}
+
+%% ---- TITLE PAGE (fill in before submission) ---------------
+\title{Inhibition of return across six horizontal locations:\\
+       A uniform spatial distribution}          % TODO: revise
+
+\author{
+    TODO First TODO Last\\
+    \small TODO Department, TODO University
+}
+\date{}
+\maketitle
+\newpage
+
+%% ============================================================
+%%  ABSTRACT
+%% ============================================================
+\begin{abstract}
+\noindent
+TODO (150--250 words).
+Inhibition of return (IOR)—the slowing of responses to targets at
+previously cued locations—has been well established for single
+peripheral locations.
+Whether IOR is spatially uniform across multiple simultaneous
+positions remains less clear.
+The present study examined IOR across six equally spaced horizontal
+locations (three per hemifield) using a detection task and a 300-ms
+stimulus onset asynchrony (SOA).
+[TODO: brief method summary, result summary, conclusion.]
+
+\bigskip
+\noindent\textit{Keywords:}
+inhibition of return;
+spatial attention;
+detection task;
+multiple locations;
+exogenous cuing
+\end{abstract}
+
+\newpage
+
+%% ============================================================
+%%  METHOD
+%% ============================================================
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Participants}
+
+TODO participants (TODO female, TODO male;
+$M_\mathrm{age} = \text{TODO}$~years, $SD = \text{TODO}$,
+range TODO--TODO~years) were recruited TODO [e.g., from the departmental
+participant pool / via Prolific].
+All participants reported normal or corrected-to-normal vision and were
+na\"{i}ve to the purpose of the study.
+Informed consent was obtained prior to participation in accordance
+with the Declaration of Helsinki, and the study was approved by the
+TODO institutional ethics review board (approval no.\ TODO).
+
+\subsection{Apparatus and Stimuli}
+
+The experiment was programmed in JavaScript using jsPsych 7.3.4
+\parencite{deleeuw2015jspsych} and presented in a web browser running
+in fullscreen mode on participants' own computers.
+Viewing distance was not physically constrained; participants were
+instructed to maintain a comfortable, stable viewing position throughout
+the session.
+
+Stimuli were presented on a black background within a
+$1000 \times 400$~pixel display area centred on the screen.
+Six white-outlined placeholder boxes (each $80 \times 80$~px, 3-px
+border) were arranged in a horizontal row.
+Box centres were located at 100, 240, 380, 620, 760, and 900~px from
+the left edge of the display area, labelled locations~1--6 from left
+to right (see Figure~TODO).
+The three leftward boxes (locations~1--3) and three rightward boxes
+(locations~4--6) were separated by a 160-px edge-to-edge gap at the
+vertical midline, which accommodated a white fixation cross
+(\texttt{+}; 48-pt Arial) centred on the display.
+Adjacent box centres within each hemifield were separated by 140~px.
+
+The cue and target stimuli were identical white-filled squares
+($74 \times 74$~px) rendered inside one of the six placeholder boxes,
+filling the box interior while leaving the 3-px border visible.
+
+\subsection{Design}
+
+A $2 \times 6$ within-subjects design was employed with
+\textit{cue validity} (valid, invalid) and \textit{location}
+(1--6) as within-subjects factors.
+On valid trials the target appeared at the cued location; on invalid
+trials the target appeared at one of the five remaining locations,
+selected at random.
+A single cue-to-target stimulus onset asynchrony (SOA) of 300~ms was
+used, consistent with the temporal window typically associated with
+inhibition of return
+\parencite[e.g.,][]{posner1984components, klein2000inhibition}.
+The $2 \times 6 = 12$ unique conditions were each repeated 25 times,
+yielding 300 experimental trials per participant.
+An additional 60 catch trials (20\,\% of the experimental trial count)
+were intermixed uniformly throughout the session to discourage
+anticipatory responding (see Procedure section).
+
+\subsection{Procedure}
+\label{sec:procedure}
+
+After providing informed consent and entering fullscreen mode,
+participants read on-screen instructions describing the task.
+They then completed 12 practice trials (data not analysed) to
+familiarise themselves with the trial sequence.
+The 360 main trials (300 experimental, 60 catch) were presented in a
+single continuous block in randomised order.
+Self-paced rest breaks were offered automatically every 48~trials.
+
+Each trial proceeded as follows (see Figure~TODO):
+\begin{enumerate}
+    \item \textit{Fixation} (750~ms): the fixation cross and six empty
+          placeholder boxes were displayed.
+    \item \textit{Cue} (50~ms): a white square appeared inside one of
+          the six boxes.
+    \item \textit{Cue--target interval} (250~ms): the display returned
+          to the fixation cross and empty boxes.
+          Together with the cue duration, this produced a cue-to-target
+          SOA of 300~ms.
+    \item \textit{Target/catch period}: on experimental trials, a white
+          square appeared inside the target box and remained until the
+          participant responded (no deadline imposed).
+          On catch trials, the fixation display continued for 1000~ms
+          with no target appearing.
+    \item \textit{Inter-trial interval} (500~ms): blank black screen.
+\end{enumerate}
+
+Participants were instructed to keep their gaze on the fixation cross
+at all times, to ignore the cue, and to press the spacebar as quickly
+as possible upon detecting the target.
+They were explicitly informed that on a minority of trials no target
+would appear, and that they should withhold their response on those
+trials.
+
+\subsection{Data Analysis}
+
+Trials on which the reaction time (RT) was less than 100~ms were
+classified as anticipatory and excluded from all RT analyses.
+Catch-trial false alarms (spacebar presses during the 1000-ms
+no-target window) were tallied per participant and are reported
+descriptively as a measure of response caution.
+
+Mean correct RTs were submitted to a $2 \times 6$
+repeated-measures analysis of variance (ANOVA) with
+\textit{validity} (valid, invalid) and \textit{location} (1--6)
+as within-subjects factors.
+Inhibition of return was operationalised as reliably slower RTs on
+valid (cued) relative to invalid (uncued) trials at the 300-ms SOA
+\parencite{posner1984components}.
+The \textit{Validity} $\times$ \textit{Location} interaction was used
+to assess whether IOR magnitude varied systematically across spatial
+positions; a null interaction was taken as evidence of spatially
+uniform IOR.
+Effect sizes are reported as partial eta-squared
+($\eta^{2}_{p}$).
+All analyses were conducted in TODO [e.g.,
+\textit{R}~4.x \parencite{rcore2024} /
+SPSS~29 / Python~3.x with \texttt{pingouin}].
+
+%% ============================================================
+%%  REFERENCES
+%% ============================================================
+
+\printbibliography
+
+\end{document}

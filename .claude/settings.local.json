@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:djlougen.github.io)",
+      "Bash(git pull:*)",
+      "Bash(git ls-tree:*)"
+    ]
+  }
+}
